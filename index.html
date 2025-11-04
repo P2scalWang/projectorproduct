@@ -103,12 +103,80 @@
           <input type="date" id="purchaseDate" name="purchaseDate" />
         </div>
 
+        <!-- 🔁 แทนที่เฉพาะบล็อคนี้: รุ่นสินค้า -->
         <div class="form-group">
           <label>รุ่นสินค้า<span class="required">*</span></label>
+
+          <!-- แถวปุ่มแบบในภาพ -->
+          <div style="display:flex;gap:10px;margin-bottom:10px;">
+            <button type="button" onclick="loadProducts()" 
+                    style="display:inline-flex;align-items:center;gap:6px;padding:10px 12px;border-radius:10px;font-weight:600;border:2px solid #374151;background:#1f2937;color:#e5e7eb;cursor:pointer;">
+              รีเฟรช
+            </button>
+            <button type="button" id="btnModelToggle" onclick="toggleModelInput()" 
+                    style="display:inline-flex;align-items:center;gap:6px;padding:10px 12px;border-radius:10px;font-weight:600;border:2px solid #374151;background:#1f2937;color:#e5e7eb;cursor:pointer;">
+              พิมพ์เอง
+            </button>
+          </div>
+
+          <!-- โหมดเลือกจากรายการ -->
           <select id="productModel" name="productModel" required>
             <option value="">กำลังโหลดข้อมูล...</option>
           </select>
+
+          <!-- โหมดพิมพ์เอง (เริ่มซ่อน) -->
+          <input type="text" id="productModelInput" placeholder="พิมพ์รุ่นสินค้าเอง"
+                 style="display:none;width:100%;padding:14px 18px;border:2px solid #e2e8f0;border-radius:12px;background:#f7fafc;margin-top:0;" />
         </div>
+
+        <script>
+          /* สคริปต์เฉพาะบล็อคนี้: toggle พิมพ์เอง/เลือก + sync ให้โค้ดเดิมอ่านจาก #productModel ได้ */
+          (function () {
+            window.toggleModelInput = function () {
+              const sel = document.getElementById('productModel');
+              const inp = document.getElementById('productModelInput');
+              const btn = document.getElementById('btnModelToggle');
+              const customOn = inp.style.display !== 'none';
+
+              if (customOn) {
+                // กลับไปเลือกจากรายการ
+                inp.style.display = 'none';
+                inp.required = false;
+                sel.style.display = '';
+                sel.required = true;
+                btn.textContent = 'พิมพ์เอง';
+              } else {
+                // ไปโหมดพิมพ์เอง
+                sel.style.display = 'none';
+                sel.required = false;
+                inp.style.display = '';
+                inp.required = true;
+                if (!inp.value) inp.value = sel.value || '';
+                btn.textContent = 'กลับไปเลือก';
+                syncToSelect(); // ให้ค่าไปอยู่ใน select ด้วย
+              }
+            };
+
+            function syncToSelect() {
+              const sel = document.getElementById('productModel');
+              const inp = document.getElementById('productModelInput');
+              let opt = sel.querySelector('option[data-custom="1"]');
+              if (!opt) {
+                opt = document.createElement('option');
+                opt.setAttribute('data-custom', '1');
+                sel.appendChild(opt);
+              }
+              const v = (inp.value || '').trim();
+              opt.value = v;
+              opt.textContent = v || '— กรอกเอง —';
+              sel.value = v; // ให้โค้ดเดิมอ่านค่าได้จาก #productModel
+            }
+
+            document.getElementById('productModelInput')
+                    .addEventListener('input', syncToSelect);
+          })();
+        </script>
+        <!-- 🔁 จบส่วนที่แก้ -->
 
         <div class="form-group">
           <label>Serial Number<span class="required">*</span></label>

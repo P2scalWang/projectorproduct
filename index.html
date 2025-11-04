@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ลงทะเบียนรับประกันสินค้า</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #1a1a2e;
+        }
+
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeInDown 0.6s ease;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+
+        .header p {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.1rem;
+        }
+
+        .form-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .form-group {
+            margin-bottom: 28px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #2d3748;
+            font-size: 0.95rem;
+        }
+
+        .required {
+            color: #e53e3e;
+            margin-left: 4px;
+        }
+
+        input[type="text"],
+        input[type="tel"],
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f7fafc;
+        }
+
+        input[type="text"]:focus,
+        input[type="tel"]:focus,
+        input[type="date"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23667eea' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 20px;
+            padding-right: 45px;
+        }
+
+        .file-upload-wrapper {
+            position: relative;
+        }
+
+        .file-upload-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            border: 3px dashed #cbd5e0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f7fafc;
+            min-height: 120px;
+        }
+
+        .file-upload-label:hover {
+            border-color: #667eea;
+            background: #edf2f7;
+        }
+
+        .file-upload-label svg {
+            margin-right: 12px;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .file-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .preview-item {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            aspect-ratio: 1;
+            border: 2px solid #e2e8f0;
+        }
+
+        .preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .preview-item button {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .preview-item button:hover {
+            background: #e53e3e;
+            transform: scale(1.1);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: slideUp 0.4s ease;
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .modal-header svg {
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .modal-header h2 {
+            color: #2d3748;
+            font-size: 1.5rem;
+        }
+
+        .info-section {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .info-section h3 {
+            color: #667eea;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+
+        .info-section ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .info-section li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+            line-height: 1.6;
+        }
+
+        .info-section li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .data-review {
+            margin-top: 24px;
+        }
+
+        .data-item {
+            display: flex;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .data-label {
+            font-weight: 600;
+            color: #4a5568;
+            min-width: 150px;
+        }
+
+        .data-value {
+            color: #2d3748;
+            flex: 1;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 28px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .btn-cancel {
+            background: #edf2f7;
+            color: #4a5568;
+        }
+
+        .btn-cancel:hover {
+            background: #e2e8f0;
+        }
+
+        .btn-confirm {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-confirm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+        }
+
+        .btn-confirm:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .success-modal {
+            text-align: center;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -45%);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 640px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .form-card {
+                padding: 24px;
+            }
+
+            .modal-content {
+                padding: 24px;
+            }
+
+            .data-item {
+                flex-direction: column;
+            }
+
+            .data-label {
+                margin-bottom: 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📦 ลงทะเบียนรับประกันสินค้า</h1>
+            <p>กรุณากรอกข้อมูลให้ครบถ้วนเพื่อรับประกันสินค้า</p>
+        </div>
+
+        <div class="form-card">
+            <form id="warrantyForm">
+                <div class="form-group">
+                    <label>ชื่อ-นามสกุล<span class="required">*</span></label>
+                    <input type="text" id="fullName" placeholder="กรอกชื่อ-นามสกุล" required>
+                </div>
+
+                <div class="form-group">
+                    <label>เบอร์โทรศัพท์<span class="required">*</span></label>
+                    <input type="tel" id="phone" placeholder="08X-XXX-XXXX" required>
+                </div>
+
+                <div class="form-group">
+                    <label>วันที่ซื้อสินค้า</label>
+                    <input type="date" id="purchaseDate">
+                </div>
+
+                <div class="form-group">
+                    <label>รุ่นสินค้า<span class="required">*</span></label>
+                    <select id="productModel" required>
+                        <option value="">กำลังโหลดข้อมูล...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Serial Number<span class="required">*</span></label>
+                    <input type="text" id="serialNumber" placeholder="กรอก Serial Number" required>
+                </div>
+
+                <div class="form-group">
+                    <label>รูปถ่าย Serial Number<span class="required">*</span></label>
+                    <div class="file-upload-wrapper">
+                        <label for="serialPhotos" class="file-upload-label">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#667eea" stroke-width="2">
+                                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                                <circle cx="12" cy="13" r="4"></circle>
+                            </svg>
+                            <div>
+                                <div style="font-weight: 600; color: #667eea; margin-bottom: 4px;">คลิกเพื่อถ่ายรูปหรืออัปโหลด</div>
+                                <div style="font-size: 0.85rem; color: #718096;">สามารถเลือกได้หลายรูป</div>
+                            </div>
+                        </label>
+                        <input type="file" id="serialPhotos" accept="image/*" multiple capture="environment">
+                        <div id="photoPreview" class="file-preview"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>ซื้อจากตัวแทนไหน (ถ้ามี)</label>
+                    <input type="text" id="dealer" placeholder="ชื่อตัวแทนหรือร้านค้า">
+                </div>
+
+                <button type="submit" class="submit-btn">ส่งข้อมูลลงทะเบียน</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#667eea" stroke-width="2">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+                <h2>ยืนยันการส่งข้อมูล</h2>
+            </div>
+
+            <div class="info-section">
+                <h3>📋 เงื่อนไขการรับประกัน</h3>
+                <ul>
+                    <li>สินค้าต้องอยู่ในสภาพสมบูรณ์ ไม่มีร่องรอยการแกะหรือดัดแปลง</li>
+                    <li>Serial Number ต้องตรงกับเครื่องที่ลงทะเบียน</li>
+                    <li>การรับประกันครอบคลุมตามเงื่อนไขของผู้ผลิตเท่านั้น</li>
+                    <li>กรุณาเก็บหลักฐานการซื้อไว้เพื่อใช้ในการเคลม</li>
+                    <li>ข้อมูลที่ให้ไว้จะถูกใช้เพื่อการบริการหลังการขายเท่านั้น</li>
+                </ul>
+            </div>
+
+            <div class="data-review">
+                <h3 style="color: #2d3748; margin-bottom: 16px;">ตรวจสอบข้อมูลของคุณ</h3>
+                <div id="reviewData"></div>
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn btn-cancel" onclick="closeModal()">แก้ไขข้อมูล</button>
+                <button type="button" class="btn btn-confirm" onclick="confirmSubmit()">ยืนยันและส่งข้อมูล</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal">
+        <div class="modal-content success-modal">
+            <div class="success-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+            </div>
+            <h2 style="color: #2d3748; margin-bottom: 12px;">ลงทะเบียนสำเร็จ!</h2>
+            <p style="color: #718096; margin-bottom: 28px;">ข้อมูลของคุณถูกส่งเรียบร้อยแล้ว</p>
+            <button type="button" class="btn btn-confirm" onclick="location.reload()">ลงทะเบียนใหม่</button>
+        </div>
+    </div>
+
+    <script>
+        // ============ CONFIG SECTION - แก้ไขตรงนี้ ============
+        const CONFIG = {
+            SHEETS_URL: 'https://docs.google.com/spreadsheets/d/1-5j1UN3xuTJB1be1IdAjPRvMA90yngtlQ-ylSiv2rEY/export?format=csv&gid=332563834',
+            WEBHOOK_URL: 'YOUR_WEBHOOK_URL_HERE'
+        };
+        // ====================================================
+
+        let selectedFiles = [];
+        let formData = {};
+
+        // Load product models from Google Sheets
+        async function loadProducts() {
+            const select = document.getElementById('productModel');
+            
+            try {
+                select.innerHTML = '<option value="">กำลังโหลด...</option>';
+                
+                const response = await fetch(CONFIG.SHEETS_URL);
+                const csvText = await response.text();
+                
+                const lines = csvText.split('\n');
+                const products = [];
+                
+                // Skip header row (index 0) and get column A
+                for (let i = 1; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    if (line) {
+                        // Get first column (Model Name)
+                        const columns = line.split(',');
+                        const model = columns[0].replace(/^"(.+)"$/, '$1').trim();
+                        if (model && model !== '') {
+                            products.push(model);
+                        }
+                    }
+                }
+                
+                // Update select options
+                select.innerHTML = '<option value="">-- เลือกรุ่นสินค้า --</option>';
+                products.forEach(product => {
+                    const option = document.createElement('option');
+                    option.value = product;
+                    option.textContent = product;
+                    select.appendChild(option);
+                });
+                
+            } catch (error) {
+                console.error('Error loading products:', error);
+                select.innerHTML = '<option value="">ไม่สามารถโหลดข้อมูลได้</option>';
+                alert('ไม่สามารถโหลดรายการสินค้าได้ กรุณาตรวจสอบการตั้งค่า Google Sheets URL');
+            }
+        }
+
+        // Load products on page load
+        window.addEventListener('load', loadProducts);
+
+        // Handle file upload
+        document.getElementById('serialPhotos').addEventListener('change', function(e) {
+            const files = Array.from(e.target.files);
+            selectedFiles = [...selectedFiles, ...files];
+            updatePhotoPreview();
+        });
+
+        function updatePhotoPreview() {
+            const preview = document.getElementById('photoPreview');
+            preview.innerHTML = '';
+            
+            selectedFiles.forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const div = document.createElement('div');
+                    div.className = 'preview-item';
+                    div.innerHTML = `
+                        <img src="${e.target.result}" alt="Preview">
+                        <button type="button" onclick="removePhoto(${index})">&times;</button>
+                    `;
+                    preview.appendChild(div);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function removePhoto(index) {
+            selectedFiles.splice(index, 1);
+            updatePhotoPreview();
+        }
+
+        // Form submission
+        document.getElementById('warrantyForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Validate photos
+            if (selectedFiles.length === 0) {
+                alert('กรุณาอัปโหลดรูปถ่าย Serial Number อย่างน้อย 1 รูป');
+                return;
+            }
+            
+            // Collect form data
+            formData = {
+                fullName: document.getElementById('fullName').value,
+                phone: document.getElementById('phone').value,
+                purchaseDate: document.getElementById('purchaseDate').value || '-',
+                productModel: document.getElementById('productModel').value,
+                serialNumber: document.getElementById('serialNumber').value,
+                dealer: document.getElementById('dealer').value || '-',
+                photoCount: selectedFiles.length,
+                submittedAt: new Date().toLocaleString('th-TH')
+            };
+            
+            // Show review data
+            const reviewHtml = `
+                <div class="data-item">
+                    <div class="data-label">ชื่อ-นามสกุล:</div>
+                    <div class="data-value">${formData.fullName}</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">เบอร์โทรศัพท์:</div>
+                    <div class="data-value">${formData.phone}</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">วันที่ซื้อสินค้า:</div>
+                    <div class="data-value">${formData.purchaseDate}</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">รุ่นสินค้า:</div>
+                    <div class="data-value">${formData.productModel}</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">Serial Number:</div>
+                    <div class="data-value">${formData.serialNumber}</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">จำนวนรูปถ่าย:</div>
+                    <div class="data-value">${formData.photoCount} รูป</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">ตัวแทนจำหน่าย:</div>
+                    <div class="data-value">${formData.dealer}</div>
+                </div>
+            `;
+            
+            document.getElementById('reviewData').innerHTML = reviewHtml;
+            document.getElementById('confirmModal').style.display = 'block';
+        });
+
+        function closeModal() {
+            document.getElementById('confirmModal').style.display = 'none';
+        }
+
+        async function confirmSubmit() {
+            const confirmBtn = document.querySelector('.btn-confirm');
+            const originalText = confirmBtn.innerHTML;
+            
+            // Show loading
+            confirmBtn.innerHTML = '<span class="loading"></span> กำลังส่งข้อมูล...';
+            confirmBtn.disabled = true;
+            
+            try {
+                // Convert files to base64
+                const photosData = await Promise.all(selectedFiles.map(file => {
+                    return new Promise((resolve) => {
+                        const reader = new FileReader();
+                        reader.onload = (e) => resolve({
+                            name: file.name,
+                            size: file.size,
+                            type: file.type,
+                            data: e.target.result
+                        });
+                        reader.readAsDataURL(file);
+                    });
+                }));
+                
+                // Prepare payload
+                const payload = {
+                    ...formData,
+                    photos: photosData
+                };
+                
+                // Send to webhook
+                const response = await fetch(CONFIG.WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to send data');
+                }
+                
+                // Show success
+                document.getElementById('confirmModal').style.display = 'none';
+                document.getElementById('successModal').style.display = 'block';
+                
+            } catch (error) {
+                console.error('Error:', error);
+                alert('เกิดข้อผิดพลาดในการส่งข้อมูล กรุณาลองใหม่อีกครั้ง\n\nหมายเหตุ: กรุณาตรวจสอบ Webhook URL ในส่วน CONFIG');
+                confirmBtn.innerHTML = originalText;
+                confirmBtn.disabled = false;
+            }
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const confirmModal = document.getElementById('confirmModal');
+            const successModal = document.getElementById('successModal');
+            if (event.target === confirmModal) {
+                closeModal();
+            }
+            if (event.target === successModal) {
+                successModal.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
